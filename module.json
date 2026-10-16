@@ -2,7 +2,7 @@
   "id": "cpr-deadline",
   "title": "DEADLINE — таймер для Cyberpunk RED",
   "description": "Синхронный таймер реального времени с произвольной подписью, сворачиванием и управлением ведущего.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "compatibility": { "minimum": "12", "verified": "12.331", "maximum": "12" },
   "authors": [{ "name": "Defaulter444", "url": "https://github.com/Defaulter444" }],
   "relationships": { "systems": [{ "id": "cyberpunk-red-core", "type": "system" }] },
@@ -10,7 +10,7 @@
   "styles": ["styles/deadline.css", "styles/config.css"],
   "url": "https://github.com/Defaulter444/cpr-deadline",
   "manifest": "https://github.com/Defaulter444/cpr-deadline/releases/latest/download/module.json",
-  "download": "https://github.com/Defaulter444/cpr-deadline/releases/download/v1.0.0/cpr-deadline.zip",
+  "download": "https://github.com/Defaulter444/cpr-deadline/releases/download/v1.0.1/cpr-deadline.zip",
   "license": "LICENSE",
   "readme": "README.md",
   "bugs": "https://github.com/Defaulter444/cpr-deadline/issues"

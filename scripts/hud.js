@@ -150,7 +150,9 @@ export class DeadlineHUD {
     const digits = displayTime(remaining);
     const label = String(state.label ?? "До жопы осталось");
     const refs = this._refs;
-    this.element.hidden = !visible && !gm;
+    // Only an active countdown occupies the canvas; management stays available
+    // through the configuration window even while this HUD is hidden.
+    this.element.hidden = status !== "running" || (!visible && !gm);
     this.element.classList.toggle("cprd-collapsed", collapsed);
     this.element.classList.toggle("cprd-warning", warning);
     this.element.dataset.status = status;
