@@ -1,8 +1,10 @@
-import { MODULE_ID, DEFAULT_STATE, normalizeState, transition, parseDuration, displayTime, statusOf } from "./timer-state.js";
+import { MODULE_ID, DEFAULT_STATE, normalizeState, transition, parseDuration, displayTime, statusOf, cleanSoundSource } from "./timer-state.js";
 import { DeadlineHUD } from "./hud.js";
+import { ExpirySignal, playSignal } from "./sound.js";
 
 let hud;
 let configWindow;
+let signal;
 let commands = Promise.resolve();
 const DEFAULT_VIEW = Object.freeze({ collapsed: false, x: null, y: null });
 
@@ -62,7 +64,7 @@ class DeadlineConfig extends FormApplication {
       title: "DEADLINE — управление таймером",
       template: `modules/${MODULE_ID}/templates/config.hbs`,
       classes: ["cprd-config"],
-      width: 420,
+      width: 460,
       height: "auto",
       resizable: false,
       closeOnSubmit: false,
@@ -74,7 +76,7 @@ class DeadlineConfig extends FormApplication {
   getData() {
     requireGM();
     const current = state();
-    return { ...current, duration: displayTime(current.durationMs), running: statusOf(current, now()) === "running" };
+    return { ...current, soundPercent: Math.round(current.soundVolume * 100), duration: displayTime(current.durationMs), running: statusOf(current, now()) === "running" };
   }
 
   activateListeners(html) {
@@ -87,7 +89,11 @@ class DeadlineConfig extends FormApplication {
       button.disabled = true;
       try {
         const type = button.dataset.command;
-        if (type === "start-saved") {
+        if (type === "preview-sound") {
+          requireGM();
+          await playSignal(this._soundFields(Object.fromEntries(new FormData(this.form))));
+          return;
+        } else if (type === "start-saved") {
           await this._apply(Object.fromEntries(new FormData(this.form)));
           await command({ type: "start" });
         } else if (type === "reset-position") {
@@ -132,11 +138,24 @@ class DeadlineConfig extends FormApplication {
     const action = {
       type: "configure",
       label: String(formData.label ?? ""),
+      ...this._soundFields(formData),
       warningSeconds,
       visible: formData.visible === true || formData.visible === "on"
     };
     if (durationMs !== state().durationMs) action.durationMs = durationMs;
     return command(action);
+  }
+
+  _soundFields(formData) {
+    const percent = Number(formData.soundPercent ?? 60);
+    if (!Number.isFinite(percent) || percent < 0 || percent > 100) {
+      throw new Error("Громкость звука должна быть от 0 до 100%.");
+    }
+    return {
+      soundEnabled: formData.soundEnabled === true || formData.soundEnabled === "on",
+      soundSrc: cleanSoundSource(formData.soundSrc),
+      soundVolume: percent / 100
+    };
   }
 
   async _updateObject(_event, formData) {
@@ -152,7 +171,7 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, "timer", {
     name: "Состояние таймера", scope: "world", config: false, type: Object,
     default: { ...DEFAULT_STATE },
-    onChange: () => { hud?.update(); configWindow?._updateStatusControls(); }
+    onChange: () => { hud?.update(); signal?.update(state(), now(), game.user.isGM); configWindow?._updateStatusControls(); }
   });
   game.settings.register(MODULE_ID, "view", {
     name: "Положение таймера", scope: "client", config: false, type: Object,
@@ -183,6 +202,14 @@ Hooks.on("getSceneControlButtons", controls => {
 
 Hooks.once("ready", () => {
   if (game.system.id !== "cyberpunk-red-core") return;
+  signal = new ExpirySignal({
+    play: playSignal,
+    onError: error => {
+      console.warn(`${MODULE_ID} | Не удалось воспроизвести сигнал завершения`, error);
+      if (game.user.isGM) ui.notifications.warn("DEADLINE: звук не загрузился. Проверьте файл в настройках таймера.");
+    }
+  });
+  signal.update(state(), now(), game.user.isGM);
   hud = new DeadlineHUD({
     getState: state, now, isGM: () => game.user.isGM,
     command: action => command(action).catch(reportError), configure: openConfig,
@@ -190,9 +217,9 @@ Hooks.once("ready", () => {
     saveView: view => game.settings.set(MODULE_ID, "view", normalizeView(view))
   });
   hud.mount();
-  const interval = setInterval(() => { hud.update(); configWindow?._updateStatusControls(); }, 200);
+  const interval = setInterval(() => { hud.update(); signal.update(state(), now(), game.user.isGM); configWindow?._updateStatusControls(); }, 200);
   window.addEventListener("beforeunload", () => { clearInterval(interval); hud.destroy(); }, { once: true });
-  document.addEventListener("visibilitychange", () => hud.update());
+  document.addEventListener("visibilitychange", () => { hud.update(); signal.update(state(), now(), game.user.isGM); });
   const module = game.modules.get(MODULE_ID);
   module.api = Object.freeze({
     open: openConfig,

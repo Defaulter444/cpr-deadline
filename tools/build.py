@@ -10,7 +10,7 @@ manifest = json.loads((ROOT / "module.json").read_text(encoding="utf-8"))
 assert manifest["id"] == "cpr-deadline"
 assert manifest["download"].endswith(f'/v{manifest["version"]}/cpr-deadline.zip')
 files = [ROOT / name for name in ("module.json", "LICENSE", "README.md")]
-for folder in ("scripts", "styles", "templates"):
+for folder in ("scripts", "styles", "templates", "assets"):
     files.extend(sorted((ROOT / folder).rglob("*.*")))
 for name in manifest["esmodules"] + manifest["styles"]:
     assert (ROOT / name).is_file(), f"Missing declared entry: {name}"

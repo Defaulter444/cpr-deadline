@@ -23,6 +23,26 @@
     <label for="cprd-visible">Показывать игрокам</label>
     <input id="cprd-visible" name="visible" type="checkbox" {{checked visible}}>
   </div>
+  <div class="form-group">
+    <label for="cprd-sound-enabled">Звук по истечении времени</label>
+    <input id="cprd-sound-enabled" name="soundEnabled" type="checkbox" {{checked soundEnabled}}>
+  </div>
+  <details class="cprd-sound-settings">
+    <summary>Настроить звук завершения</summary>
+    <div class="form-group cprd-stack">
+      <label for="cprd-sound-src">Аудиофайл</label>
+      <div class="cprd-sound-path">
+        <input id="cprd-sound-src" name="soundSrc" type="text" value="{{soundSrc}}" placeholder="Встроенный сигнал DEADLINE">
+        <button type="button" class="file-picker" data-type="audio" data-target="soundSrc" title="Выбрать аудиофайл" aria-label="Выбрать аудиофайл"><i class="fas fa-file-audio" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="cprd-sound-percent">Громкость, %</label>
+      <input id="cprd-sound-percent" name="soundPercent" type="number" min="0" max="100" step="1" value="{{soundPercent}}">
+    </div>
+    <button type="button" data-command="preview-sound"><i class="fas fa-volume-high" aria-hidden="true"></i> Прослушать у себя</button>
+    <p class="notes">Пустое поле — встроенный сигнал. Скрытый от игроков таймер слышит только ведущий. Звук учитывает личную громкость интерфейса Foundry; прослушивание не меняет сохранённые настройки.</p>
+  </details>
   <p class="notes">Панель появляется только во время отсчёта. До запуска, на паузе и по истечении времени она скрыта. Вернуться к управлению: Alt+T или «Ещё → Настроить таймер» в Night City UI.</p>
   <p class="notes">Выключенный показ игрокам не останавливает отсчёт; ведущий видит работающий таймер. Сворачивание и положение каждого участника сохраняются.</p>
   <div class="cprd-submit-row">

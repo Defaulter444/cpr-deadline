@@ -1,11 +1,11 @@
 {
   "name": "cpr-deadline",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "check": "node --check scripts/main.js && node --check scripts/hud.js && node --check scripts/timer-state.js",
+    "check": "node --check scripts/main.js && node --check scripts/hud.js && node --check scripts/timer-state.js && node --check scripts/sound.js",
     "build": "python tools/build.py"
   },
   "engines": { "node": ">=20" }

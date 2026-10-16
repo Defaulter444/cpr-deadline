@@ -1,5 +1,6 @@
 /** Framework-independent countdown state. All timestamps and durations use milliseconds. */
 export const MODULE_ID = "cpr-deadline";
+export const DEFAULT_SOUND = `modules/${MODULE_ID}/assets/expiry.wav`;
 export const MAX_DURATION_MS = (99 * 3600 + 59 * 60 + 59) * 1000;
 export const DEFAULT_STATE = Object.freeze({
   schema: 1,
@@ -10,7 +11,10 @@ export const DEFAULT_STATE = Object.freeze({
   status: "idle",
   visible: false,
   runId: "",
-  warningSeconds: 60
+  warningSeconds: 60,
+  soundEnabled: true,
+  soundSrc: "",
+  soundVolume: 0.6
 });
 
 const hasOwn = (value, key) => Object.prototype.hasOwnProperty.call(value, key);
@@ -23,6 +27,16 @@ function cleanLabel(value) {
   if (typeof value !== "string") return DEFAULT_STATE.label;
   const text = value.replace(/[\u0000-\u001f\u007f]/g, " ").trim();
   return Array.from(text || DEFAULT_STATE.label).slice(0, 160).join("");
+}
+
+/** Empty uses the bundled signal; Foundry paths and HTTP(S) audio URLs are supported. */
+export function cleanSoundSource(value) {
+  const source = typeof value === "string" ? value.trim() : "";
+  if (source.length > 2048 || /[\u0000-\u001f\u007f\\]/.test(source) ||
+      (/^[a-z][a-z0-9+.-]*:/i.test(source) && !/^https?:\/\//i.test(source))) {
+    throw new RangeError("Выберите аудиофайл Foundry или укажите HTTP(S)-ссылку на звук.");
+  }
+  return source;
 }
 
 function clockValue(now) {
@@ -41,6 +55,8 @@ function newRunId() {
 export function normalizeState(input) {
   const source = input && typeof input === "object" && !Array.isArray(input) ? input : {};
   const durationMs = milliseconds(source.durationMs, DEFAULT_STATE.durationMs, 1000);
+  let soundSrc = "";
+  try { soundSrc = cleanSoundSource(source.soundSrc); } catch { /* Repair invalid saved paths. */ }
   const state = {
     schema: 1,
     label: cleanLabel(source.label),
@@ -53,7 +69,10 @@ export function normalizeState(input) {
     runId: typeof source.runId === "string" ? source.runId.slice(0, 128) : "",
     warningSeconds: finite(source.warningSeconds)
       ? clamp(Math.round(source.warningSeconds), 0, MAX_DURATION_MS / 1000)
-      : DEFAULT_STATE.warningSeconds
+      : DEFAULT_STATE.warningSeconds,
+    soundEnabled: typeof source.soundEnabled === "boolean" ? source.soundEnabled : DEFAULT_STATE.soundEnabled,
+    soundSrc,
+    soundVolume: finite(source.soundVolume) ? clamp(source.soundVolume, 0, 1) : DEFAULT_STATE.soundVolume
   };
   // A damaged deadline cannot be reconstructed; retain its saved remaining time as paused.
   if (state.status === "running" && state.deadlineMs === null) state.status = "paused";
@@ -119,6 +138,17 @@ export function transition(input, action, now) {
   switch (action.type) {
     case "configure": {
       if (hasOwn(action, "label")) state.label = cleanLabel(action.label);
+      if (hasOwn(action, "soundEnabled")) {
+        if (typeof action.soundEnabled !== "boolean") throw new TypeError("Sound enabled must be a boolean.");
+        state.soundEnabled = action.soundEnabled;
+      }
+      if (hasOwn(action, "soundSrc")) state.soundSrc = cleanSoundSource(action.soundSrc);
+      if (hasOwn(action, "soundVolume")) {
+        if (!finite(action.soundVolume) || action.soundVolume < 0 || action.soundVolume > 1) {
+          throw new RangeError("Громкость звука должна быть от 0 до 100%.");
+        }
+        state.soundVolume = action.soundVolume;
+      }
       if (hasOwn(action, "visible")) {
         if (typeof action.visible !== "boolean") throw new TypeError("Visibility must be a boolean.");
         state.visible = action.visible;

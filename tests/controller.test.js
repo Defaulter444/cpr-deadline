@@ -140,3 +140,48 @@ test("invalid form input is rejected before any persistent timer update", async 
   await assert.rejects(config._apply({ duration: "01:00", warningSeconds: "1.5" }), /Порог предупреждения/);
   assert.equal(writes.length, 0);
 });
+
+test("form saves native and Foundry sound checkboxes, source, and percentage volume", async () => {
+  reset();
+  const config = new Config();
+  const fields = { duration: "10:00", warningSeconds: "60", soundSrc: "  audio/end.ogg  ", soundPercent: "25" };
+  for (const [soundEnabled, expected] of [["on", true], [true, true], [false, false], [undefined, false]]) {
+    await config._apply({ ...fields, soundEnabled });
+    assert.equal(saved.soundEnabled, expected);
+    assert.equal(saved.soundSrc, "audio/end.ogg");
+    assert.equal(saved.soundVolume, 0.25);
+  }
+  await config._apply({ ...fields, soundEnabled: true, soundSrc: "", soundPercent: "0" });
+  assert.equal(saved.soundSrc, "");
+  assert.equal(saved.soundVolume, 0, "zero is a valid, explicit mute");
+  assert.equal(config.getData().soundPercent, 0);
+});
+
+test("changing sound in the form leaves the active countdown intact", async () => {
+  reset();
+  await command({ type: "start" });
+  const deadline = saved.deadlineMs;
+  const runId = saved.runId;
+  game.time.serverTime += 25000;
+  await new Config()._apply({ label: saved.label, duration: "10:00", warningSeconds: "60",
+    soundEnabled: "on", soundSrc: "audio/end.wav", soundPercent: "35" });
+  assert.equal(saved.soundVolume, 0.35);
+  assert.equal(saved.soundEnabled, true);
+  assert.equal(saved.soundSrc, "audio/end.wav");
+  assert.equal(saved.status, "running");
+  assert.equal(saved.deadlineMs, deadline);
+  assert.equal(saved.runId, runId);
+  assert.equal(remainingMs(saved, game.time.serverTime), 575000);
+});
+
+test("invalid sound form data cannot persist a partial timer update", async () => {
+  reset();
+  const config = new Config();
+  const fields = { label: "Must not save", duration: "01:00", warningSeconds: "60", soundEnabled: "on" };
+  for (const soundPercent of ["-1", "101", "not-a-number", "Infinity"]) {
+    await assert.rejects(config._apply({ ...fields, soundPercent }), /Громкость/);
+  }
+  await assert.rejects(config._apply({ ...fields, soundPercent: "60", soundSrc: "javascript:alert(1)" }), /аудиофайл/);
+  assert.equal(writes.length, 0);
+  assert.deepEqual(saved, DEFAULT_STATE);
+});

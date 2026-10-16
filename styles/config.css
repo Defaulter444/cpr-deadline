@@ -29,3 +29,11 @@
 .cprd-config .cprd-position { background: transparent; color: #b8c2cc; }
 .cprd-config button:disabled { opacity: .5; cursor: wait; }
 #cpr-deadline-config { --cpr-text-window: #e8edf1; --cpr-text-foundry-hint: #aeb9c4; --cpr-text-hint: #aeb9c4; }
+.cprd-config .cprd-sound-settings { border: 1px solid #39434c; border-radius: 3px; padding: 9px; }
+.cprd-config .cprd-sound-settings summary { cursor: pointer; color: #e8edf1; }
+.cprd-config .cprd-sound-settings > :not(summary) { margin-top: 10px; }
+.cprd-config .cprd-sound-path { display: flex; gap: 6px; }
+.cprd-config .cprd-sound-path input { min-width: 0; flex: 1; }
+.cprd-config .cprd-sound-path button { flex: 0 0 34px; }
+#cpr-deadline-config { max-height: calc(100vh - 32px); }
+#cpr-deadline-config .window-content { overflow-y: auto; }
