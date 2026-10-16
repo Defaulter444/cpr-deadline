@@ -1,0 +1,44 @@
+<form autocomplete="off">
+  <p class="cprd-intro">Реальное время. Одна угроза. Весь стол видит один отсчёт.</p>
+  <div class="form-group cprd-stack">
+    <label for="cprd-label">Подпись</label>
+    <input id="cprd-label" name="label" type="text" maxlength="160" value="{{label}}" placeholder="До жопы осталось">
+  </div>
+  <div class="form-group cprd-stack">
+    <label for="cprd-duration">Длительность</label>
+    <input id="cprd-duration" name="duration" type="text" value="{{duration}}" inputmode="text" required aria-describedby="cprd-duration-hint">
+    <p id="cprd-duration-hint" class="notes">Секунды, ММ:СС или ЧЧ:ММ:СС. Изменение длительности подготовит новый таймер.</p>
+    <div class="cprd-presets">
+      <button type="button" data-preset="01:00">1 мин</button>
+      <button type="button" data-preset="05:00">5 мин</button>
+      <button type="button" data-preset="10:00">10 мин</button>
+      <button type="button" data-preset="30:00">30 мин</button>
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="cprd-warning">Красные цифры за, сек.</label>
+    <input id="cprd-warning" name="warningSeconds" type="number" min="0" max="359999" step="1" value="{{warningSeconds}}" required>
+  </div>
+  <div class="form-group">
+    <label for="cprd-visible">Показывать игрокам</label>
+    <input id="cprd-visible" name="visible" type="checkbox" {{checked visible}}>
+  </div>
+  <p class="notes">Выключенный показ не останавливает отсчёт. Сворачивание и положение каждый участник меняет у себя.</p>
+  <div class="cprd-submit-row">
+    <button type="submit"><i class="fas fa-save" aria-hidden="true"></i> Сохранить</button>
+    <button class="cprd-primary" type="button" data-command="start-saved"><i class="fas fa-play" aria-hidden="true"></i> Сохранить и запустить</button>
+  </div>
+  <fieldset>
+    <legend>Текущий отсчёт</legend>
+    <div class="cprd-live-controls">
+      <button type="button" data-command="toggle"><i class="fas fa-play" aria-hidden="true"></i> <span>Продолжить</span></button>
+      <button type="button" data-command="reset" title="Вернуть исходную длительность и остановить"><i class="fas fa-rotate-left" aria-hidden="true"></i> Сбросить</button>
+    </div>
+    <div class="cprd-live-controls">
+      <button type="button" data-command="adjust" data-delta="-60000">−1 мин</button>
+      <button type="button" data-command="adjust" data-delta="60000">+1 мин</button>
+    </div>
+    <p class="notes">Эти кнопки управляют сохранённым таймером. Поля выше применяются кнопкой «Сохранить».</p>
+  </fieldset>
+  <button class="cprd-position" type="button" data-command="reset-position"><i class="fas fa-crosshairs" aria-hidden="true"></i> Вернуть в угол на моём экране</button>
+</form>

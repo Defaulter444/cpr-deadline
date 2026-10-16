@@ -1,0 +1,31 @@
+#cpr-deadline-config .window-content { background: #151a20; color: #e8edf1; padding: 18px; }
+#cpr-deadline-config form { display: flex; flex-direction: column; gap: 12px; }
+#cpr-deadline-config form > * { flex: 0 0 auto; }
+#cpr-deadline-config form label { color: #e8edf1; line-height: 1.5; }
+#cpr-deadline-config form .notes { color: #aeb9c4; flex: 0 0 auto; }
+#cpr-deadline-config form button { color: #e8edf1; background: #242c35; }
+#cpr-deadline-config form button:hover { background: #343e49; }
+#cpr-deadline-config form button.cprd-primary { background: #b82032; color: #fff; }
+#cpr-deadline-config form button.cprd-primary:hover { background: #d12b3e; }
+.cprd-config .cprd-intro { margin: 0 0 4px; color: #b8c2cc; line-height: 1.45; }
+.cprd-config .form-group { margin: 0; gap: 10px; }
+.cprd-config .cprd-stack { display: flex; flex-direction: column; align-items: stretch; gap: 6px; }
+.cprd-config .cprd-stack > * { width: 100%; flex: none; }
+.cprd-config input[type="text"], .cprd-config input[type="number"] { color: #f3f5f7; background: #0d1217; border: 1px solid #47535f; height: 34px; padding: 6px 9px; }
+.cprd-config input[type="checkbox"] { accent-color: #ed394a; }
+.cprd-config label { font-weight: 600; color: #e8edf1; }
+.cprd-config .notes { font-size: 12px; line-height: 1.45; color: #aeb9c4; margin: 0; }
+.cprd-config button { color: #e8edf1; background: #242c35; border: 1px solid #47535f; border-radius: 3px; min-height: 32px; line-height: 1.3; padding: 7px; margin: 0; }
+.cprd-config button:hover { background: #343e49; box-shadow: none; }
+.cprd-config button:focus-visible, .cprd-config input:focus-visible { outline: 2px solid #ed394a; outline-offset: 2px; box-shadow: none; }
+.cprd-config button.cprd-primary { background: #b82032; border-color: #ed394a; color: #fff; }
+.cprd-config button.cprd-primary:hover { background: #d12b3e; }
+.cprd-config .cprd-presets, .cprd-config .cprd-live-controls, .cprd-config .cprd-submit-row { display: flex; gap: 6px; }
+.cprd-config .cprd-presets button, .cprd-config .cprd-live-controls button { flex: 1; }
+.cprd-config .cprd-submit-row > :first-child { flex: 1; }
+.cprd-config .cprd-submit-row > :last-child { flex: 1.6; }
+.cprd-config fieldset { margin: 4px 0 0; padding: 12px; border: 1px solid #39434c; display: grid; gap: 8px; }
+.cprd-config legend { color: #b8c2cc; font-size: 12px; padding: 0 6px; }
+.cprd-config .cprd-position { background: transparent; color: #b8c2cc; }
+.cprd-config button:disabled { opacity: .5; cursor: wait; }
+#cpr-deadline-config { --cpr-text-window: #e8edf1; --cpr-text-foundry-hint: #aeb9c4; --cpr-text-hint: #aeb9c4; }

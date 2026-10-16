@@ -1,0 +1,277 @@
+#cpr-deadline-hud {
+  --cprd-red: #ed394a;
+  --cprd-text: #f4f5f7;
+  --cprd-muted: #a5afb8;
+  --cprd-content-width: 266px;
+  --cprd-digit-count: 5;
+  position: fixed;
+  z-index: 60;
+  box-sizing: border-box;
+  width: 300px;
+  margin: 0;
+  padding: 12px 16px 13px;
+  overflow: auto;
+  color: var(--cprd-text);
+  background: #0d1217;
+  border: 1px solid #39434c;
+  border-radius: 4px;
+  box-shadow: 0 5px 20px rgb(0 0 0 / 35%);
+  font: 14px/1.4 "Rubik", Arial, sans-serif;
+  text-align: left;
+  isolation: isolate;
+  scrollbar-width: thin;
+}
+
+#cpr-deadline-hud *,
+#cpr-deadline-hud *::before,
+#cpr-deadline-hud *::after {
+  box-sizing: border-box;
+}
+
+#cpr-deadline-hud[hidden],
+#cpr-deadline-hud [hidden] {
+  display: none !important;
+}
+
+#cpr-deadline-hud .cprd-header {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 24px;
+  gap: 8px;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+#cpr-deadline-hud .cprd-dot {
+  flex: 0 0 auto;
+  width: 7px;
+  color: var(--cprd-red);
+  font-size: 7px;
+  line-height: 1;
+}
+
+#cpr-deadline-hud .cprd-brand {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #c9d0d7;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.17em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cpr-deadline-hud .cprd-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: 2px;
+  margin-left: auto;
+}
+
+#cpr-deadline-hud .cprd-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  margin: 0;
+  padding: 0;
+  color: #abb5be;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  box-shadow: none;
+  font: inherit;
+  font-size: 11px;
+  line-height: 1;
+  text-shadow: none;
+  cursor: pointer;
+}
+
+#cpr-deadline-hud .cprd-button i {
+  margin: 0;
+  pointer-events: none;
+}
+
+#cpr-deadline-hud .cprd-button:hover {
+  color: #ffffff;
+  background: #222b34;
+  border-color: #45525e;
+  box-shadow: none;
+}
+
+#cpr-deadline-hud .cprd-button:focus-visible {
+  outline: 2px solid #ff7481;
+  outline-offset: 2px;
+  color: #ffffff;
+}
+
+#cpr-deadline-hud .cprd-button:disabled {
+  opacity: 0.45;
+  cursor: wait;
+}
+
+#cpr-deadline-hud[data-gm="false"] .cprd-gm-control {
+  display: none !important;
+}
+
+#cpr-deadline-hud .cprd-caption {
+  margin: 9px 0 0;
+  overflow: hidden;
+  color: #e2e6e9;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 21px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cpr-deadline-hud .cprd-time,
+#cpr-deadline-hud .cprd-compact-time {
+  color: #ffffff;
+  font-family: "Tektur", "Consolas", "Liberation Mono", monospace;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums lining-nums;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+}
+
+#cpr-deadline-hud .cprd-time {
+  margin: 2px 0 0;
+  font-size: min(56px, calc(var(--cprd-content-width) / (var(--cprd-digit-count) * 0.61)));
+  line-height: 1.12;
+}
+
+#cpr-deadline-hud .cprd-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  min-height: 16px;
+  margin-top: 4px;
+  color: var(--cprd-muted);
+  font-size: 10px;
+  line-height: 16px;
+}
+
+#cpr-deadline-hud .cprd-status,
+#cpr-deadline-hud .cprd-visibility {
+  min-width: 0;
+}
+
+#cpr-deadline-hud .cprd-visibility {
+  color: #c9b493;
+  white-space: nowrap;
+}
+
+#cpr-deadline-hud .cprd-visibility i {
+  margin-right: 4px;
+  font-size: 9px;
+}
+
+#cpr-deadline-hud .cprd-progress {
+  position: absolute;
+  right: 16px;
+  bottom: 9px;
+  left: 16px;
+  height: 3px;
+  border-radius: 2px;
+  overflow: hidden;
+  background: #252d35;
+}
+
+#cpr-deadline-hud .cprd-progress-fill {
+  width: 100%;
+  height: 100%;
+  background: var(--cprd-red);
+  transform-origin: left center;
+}
+
+#cpr-deadline-hud .cprd-compact-label,
+#cpr-deadline-hud .cprd-compact-time {
+  display: none;
+}
+
+#cpr-deadline-hud.cprd-collapsed {
+  padding: 7px 9px 7px 12px;
+  min-height: 40px;
+}
+
+#cpr-deadline-hud.cprd-collapsed .cprd-header {
+  gap: 7px;
+}
+
+#cpr-deadline-hud.cprd-collapsed .cprd-brand,
+#cpr-deadline-hud.cprd-collapsed .cprd-body,
+#cpr-deadline-hud.cprd-collapsed .cprd-gm-control {
+  display: none !important;
+}
+
+#cpr-deadline-hud.cprd-collapsed .cprd-progress {
+  left: 8px;
+  right: 8px;
+  bottom: 1px;
+  height: 2px;
+}
+
+#cpr-deadline-hud.cprd-collapsed .cprd-compact-label {
+  display: block;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  color: #d2d8de;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 24px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#cpr-deadline-hud.cprd-collapsed .cprd-compact-time {
+  display: block;
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: min(22px, calc((var(--cprd-content-width) - 40px) / (var(--cprd-digit-count) * 0.61)));
+  line-height: 24px;
+}
+
+#cpr-deadline-hud[data-status="paused"] .cprd-dot {
+  color: #e2bc78;
+}
+
+#cpr-deadline-hud[data-status="expired"] .cprd-time,
+#cpr-deadline-hud[data-status="expired"] .cprd-compact-time,
+#cpr-deadline-hud[data-status="expired"] .cprd-status,
+#cpr-deadline-hud.cprd-warning .cprd-time,
+#cpr-deadline-hud.cprd-warning .cprd-compact-time,
+#cpr-deadline-hud.cprd-warning .cprd-status {
+  color: var(--cprd-red);
+}
+
+#cpr-deadline-hud.cprd-collapsed[data-world-visible="false"] .cprd-dot {
+  width: 11px;
+  color: #c9b493;
+  font-size: 9px;
+}
+
+#cpr-deadline-hud.cprd-dragging,
+#cpr-deadline-hud.cprd-dragging .cprd-header {
+  cursor: grabbing;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #cpr-deadline-hud,
+  #cpr-deadline-hud * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
